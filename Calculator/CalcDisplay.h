@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+
+
 namespace Calculator {
 
 	using namespace System;
@@ -10,13 +12,20 @@ namespace Calculator {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+
+	int characterLimit = 10;
+	bool first_click;
+
+
+
+
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	private:
-		bool first_click;
+		
 		System::String^ current_num;
 		double num1; 
 		double num2; 
@@ -24,7 +33,8 @@ namespace Calculator {
 		bool multiplication;
 		bool division;
 		bool addition;
-   		bool subtraction;
+	    bool subtraction;
+
 
 	public:
 
@@ -39,6 +49,8 @@ namespace Calculator {
 			subtraction = false;
 
 		}
+
+
 
 
 	protected:
@@ -71,6 +83,7 @@ namespace Calculator {
 	private: System::Windows::Forms::Button^ equal_button;
 	private: System::Windows::Forms::Button^ decimal_button;
 	private: System::Windows::Forms::Label^ display_label;
+	private: System::Windows::Forms::Label^ sub_label;
 
 	protected:
 
@@ -81,6 +94,60 @@ namespace Calculator {
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
+		
+		void limitString(System::String^% str) {
+			if (str->Length > characterLimit) {
+				str = str->Substring(0, 10);
+			}
+		}
+
+		void numberPush(System::String^% x) {
+			if (first_click == true) {
+				current_num = x;
+				first_click = false;
+			}
+			else {
+				current_num += x;
+			}
+			display_label->Text = current_num;
+
+		}
+
+		void operatorPushed(System::String^% str) {
+			limitString(str);
+			num1 = System::Convert::ToDouble(str);
+			first_click = true;
+			sub_label->Text = str;
+			current_num = "";
+
+		}
+
+		void HandleOperatorButtonClick(System::String^ operatorText, bool% operatorFlag)
+		{
+			if (!multiplication && !division && !addition && !subtraction)
+			{
+				if (current_num == "") {
+					current_num = "0";
+				}
+				operatorPushed(current_num);
+				operatorFlag = true;
+				sub_label->Text += " " + operatorText + " ";
+			}
+			else
+			{
+				multiplication = division = addition = subtraction = false;
+				sub_label->Text = sub_label->Text->Substring(0, sub_label->Text->Length - 3);
+				operatorFlag = true;
+				sub_label->Text += " " + operatorText + " ";
+			}
+		}
+
+		void checkForNumber() {
+			if (current_num == "") {
+				current_num = display_label->Text;
+			}
+		}
+
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -105,11 +172,12 @@ namespace Calculator {
 			this->equal_button = (gcnew System::Windows::Forms::Button());
 			this->decimal_button = (gcnew System::Windows::Forms::Button());
 			this->display_label = (gcnew System::Windows::Forms::Label());
+			this->sub_label = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// zero_button
 			// 
-			this->zero_button->Location = System::Drawing::Point(73, 219);
+			this->zero_button->Location = System::Drawing::Point(76, 259);
 			this->zero_button->Name = L"zero_button";
 			this->zero_button->Size = System::Drawing::Size(42, 43);
 			this->zero_button->TabIndex = 0;
@@ -119,7 +187,7 @@ namespace Calculator {
 			// 
 			// one_button
 			// 
-			this->one_button->Location = System::Drawing::Point(25, 170);
+			this->one_button->Location = System::Drawing::Point(28, 210);
 			this->one_button->Name = L"one_button";
 			this->one_button->Size = System::Drawing::Size(42, 43);
 			this->one_button->TabIndex = 1;
@@ -129,7 +197,7 @@ namespace Calculator {
 			// 
 			// two_button
 			// 
-			this->two_button->Location = System::Drawing::Point(73, 170);
+			this->two_button->Location = System::Drawing::Point(76, 210);
 			this->two_button->Name = L"two_button";
 			this->two_button->Size = System::Drawing::Size(42, 43);
 			this->two_button->TabIndex = 2;
@@ -139,7 +207,7 @@ namespace Calculator {
 			// 
 			// three_button
 			// 
-			this->three_button->Location = System::Drawing::Point(121, 170);
+			this->three_button->Location = System::Drawing::Point(124, 210);
 			this->three_button->Name = L"three_button";
 			this->three_button->Size = System::Drawing::Size(42, 43);
 			this->three_button->TabIndex = 3;
@@ -149,7 +217,7 @@ namespace Calculator {
 			// 
 			// four_button
 			// 
-			this->four_button->Location = System::Drawing::Point(25, 121);
+			this->four_button->Location = System::Drawing::Point(28, 161);
 			this->four_button->Name = L"four_button";
 			this->four_button->Size = System::Drawing::Size(42, 43);
 			this->four_button->TabIndex = 4;
@@ -159,7 +227,7 @@ namespace Calculator {
 			// 
 			// five_button
 			// 
-			this->five_button->Location = System::Drawing::Point(73, 121);
+			this->five_button->Location = System::Drawing::Point(76, 161);
 			this->five_button->Name = L"five_button";
 			this->five_button->Size = System::Drawing::Size(42, 43);
 			this->five_button->TabIndex = 5;
@@ -169,7 +237,7 @@ namespace Calculator {
 			// 
 			// six_button
 			// 
-			this->six_button->Location = System::Drawing::Point(121, 121);
+			this->six_button->Location = System::Drawing::Point(124, 161);
 			this->six_button->Name = L"six_button";
 			this->six_button->Size = System::Drawing::Size(42, 43);
 			this->six_button->TabIndex = 6;
@@ -179,7 +247,7 @@ namespace Calculator {
 			// 
 			// seven_button
 			// 
-			this->seven_button->Location = System::Drawing::Point(25, 72);
+			this->seven_button->Location = System::Drawing::Point(28, 112);
 			this->seven_button->Name = L"seven_button";
 			this->seven_button->Size = System::Drawing::Size(42, 43);
 			this->seven_button->TabIndex = 7;
@@ -189,7 +257,7 @@ namespace Calculator {
 			// 
 			// eight_button
 			// 
-			this->eight_button->Location = System::Drawing::Point(73, 72);
+			this->eight_button->Location = System::Drawing::Point(76, 112);
 			this->eight_button->Name = L"eight_button";
 			this->eight_button->Size = System::Drawing::Size(42, 43);
 			this->eight_button->TabIndex = 8;
@@ -199,7 +267,7 @@ namespace Calculator {
 			// 
 			// nine_button
 			// 
-			this->nine_button->Location = System::Drawing::Point(121, 72);
+			this->nine_button->Location = System::Drawing::Point(124, 112);
 			this->nine_button->Name = L"nine_button";
 			this->nine_button->Size = System::Drawing::Size(42, 43);
 			this->nine_button->TabIndex = 9;
@@ -209,7 +277,7 @@ namespace Calculator {
 			// 
 			// clear_button
 			// 
-			this->clear_button->Location = System::Drawing::Point(25, 219);
+			this->clear_button->Location = System::Drawing::Point(28, 259);
 			this->clear_button->Name = L"clear_button";
 			this->clear_button->Size = System::Drawing::Size(42, 43);
 			this->clear_button->TabIndex = 10;
@@ -219,7 +287,7 @@ namespace Calculator {
 			// 
 			// divide_button
 			// 
-			this->divide_button->Location = System::Drawing::Point(169, 121);
+			this->divide_button->Location = System::Drawing::Point(172, 161);
 			this->divide_button->Name = L"divide_button";
 			this->divide_button->Size = System::Drawing::Size(42, 43);
 			this->divide_button->TabIndex = 11;
@@ -229,7 +297,7 @@ namespace Calculator {
 			// 
 			// multiply_button
 			// 
-			this->multiply_button->Location = System::Drawing::Point(169, 72);
+			this->multiply_button->Location = System::Drawing::Point(172, 112);
 			this->multiply_button->Name = L"multiply_button";
 			this->multiply_button->Size = System::Drawing::Size(42, 43);
 			this->multiply_button->TabIndex = 12;
@@ -239,7 +307,7 @@ namespace Calculator {
 			// 
 			// add_button
 			// 
-			this->add_button->Location = System::Drawing::Point(169, 170);
+			this->add_button->Location = System::Drawing::Point(172, 210);
 			this->add_button->Name = L"add_button";
 			this->add_button->Size = System::Drawing::Size(42, 43);
 			this->add_button->TabIndex = 13;
@@ -249,7 +317,7 @@ namespace Calculator {
 			// 
 			// subtract_button
 			// 
-			this->subtract_button->Location = System::Drawing::Point(169, 219);
+			this->subtract_button->Location = System::Drawing::Point(172, 259);
 			this->subtract_button->Name = L"subtract_button";
 			this->subtract_button->Size = System::Drawing::Size(42, 43);
 			this->subtract_button->TabIndex = 14;
@@ -259,7 +327,7 @@ namespace Calculator {
 			// 
 			// equal_button
 			// 
-			this->equal_button->Location = System::Drawing::Point(25, 268);
+			this->equal_button->Location = System::Drawing::Point(28, 308);
 			this->equal_button->Name = L"equal_button";
 			this->equal_button->Size = System::Drawing::Size(186, 43);
 			this->equal_button->TabIndex = 15;
@@ -269,7 +337,7 @@ namespace Calculator {
 			// 
 			// decimal_button
 			// 
-			this->decimal_button->Location = System::Drawing::Point(121, 219);
+			this->decimal_button->Location = System::Drawing::Point(124, 259);
 			this->decimal_button->Name = L"decimal_button";
 			this->decimal_button->Size = System::Drawing::Size(42, 43);
 			this->decimal_button->TabIndex = 16;
@@ -282,7 +350,7 @@ namespace Calculator {
 			this->display_label->Anchor = System::Windows::Forms::AnchorStyles::Right;
 			this->display_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->display_label->Location = System::Drawing::Point(32, 34);
+			this->display_label->Location = System::Drawing::Point(28, 69);
 			this->display_label->Name = L"display_label";
 			this->display_label->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->display_label->Size = System::Drawing::Size(186, 31);
@@ -290,11 +358,24 @@ namespace Calculator {
 			this->display_label->Text = L"0";
 			this->display_label->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
 			// 
+			// sub_label
+			// 
+			this->sub_label->Anchor = System::Windows::Forms::AnchorStyles::Right;
+			this->sub_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->sub_label->Location = System::Drawing::Point(28, 46);
+			this->sub_label->Name = L"sub_label";
+			this->sub_label->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->sub_label->Size = System::Drawing::Size(186, 23);
+			this->sub_label->TabIndex = 18;
+			this->sub_label->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(10, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(244, 352);
+			this->ClientSize = System::Drawing::Size(244, 387);
+			this->Controls->Add(this->sub_label);
 			this->Controls->Add(this->display_label);
 			this->Controls->Add(this->decimal_button);
 			this->Controls->Add(this->equal_button);
@@ -318,7 +399,7 @@ namespace Calculator {
 			this->Location = System::Drawing::Point(178, 299);
 			this->Margin = System::Windows::Forms::Padding(5);
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Calculator";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 
@@ -328,209 +409,150 @@ namespace Calculator {
 	//string for the current number being made. If the buttons have already been clicked it will
 	//append the number to the end of the string.
 	private: System::Void zero_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "0";
-			first_click = false;
-		}
+		System::String^ input = gcnew System::String("0");
+		if (current_num == "") {}
 		else {
-			current_num += "0";
+			numberPush(input);
 		}
-		display_label->Text = current_num;
 	}
 
 	private: System::Void one_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "1";
-			first_click = false;
-		}
-		else {
-			current_num += "1";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("1");
+
+		numberPush(input);
 	}
 
 	private: System::Void two_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "2";
-			first_click = false;
-		}
-		else {
-			current_num += "2";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("2");
+
+		numberPush(input);
 	}
 
 	private: System::Void three_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "3";
-			first_click = false;
-		}
-		else {
-			current_num += "3";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("3");
+
+		numberPush(input);
 	}
 
 	private: System::Void four_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "4";
-			first_click = false;
-		}
-		else {
-			current_num += "4";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("4");
+
+		numberPush(input);
 	}
 
 	private: System::Void five_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "5";
-			first_click = false;
-		}
-		else {
-			current_num += "5";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("5");
+
+		numberPush(input);
 	}
 
 	private: System::Void six_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "6";
-			first_click = false;
-		}
-		else {
-			current_num += "6";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("6");
+
+		numberPush(input);
 	}
 
 	private: System::Void seven_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "7";
-			first_click = false;
-		}
-		else {
-			current_num += "7";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("7");
+
+		numberPush(input);
 	}
 
 	private: System::Void eight_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "8";
-			first_click = false;
-		}
-		else {
-			current_num += "8";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("8");
+
+		numberPush(input);
 	}
 
 	private: System::Void nine_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "9";
-			first_click = false;
-		}
-		else {
-			current_num += "9";
-		}
-		display_label->Text = current_num;
+		System::String^ input = gcnew System::String("9");
+
+		numberPush(input);
 	}
+
 	private: System::Void decimal_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (first_click == true) {
-			current_num = "0.";
-			first_click = false;
+		int found = current_num->IndexOf('.');
+		if (found != -1) {}
+		else if (first_click == true) {
+			System::String^ input = gcnew System::String("0.");
+
+			numberPush(input);
 		}
 		else {
-			current_num += ".";
+			System::String^ input = gcnew System::String(".");
+
+			numberPush(input);
 		}
-		display_label->Text = current_num;
+
 	}
 
 	private: System::Void multiply_button_Click(System::Object^ sender, System::EventArgs^ e) {
-
-		
-		if (!multiplication && !division && !addition && !subtraction) {
-			num1 = System::Convert::ToInt16(current_num);
-			first_click = true;
-			multiplication = true;
-			current_num = "";
+		HandleOperatorButtonClick("X", multiplication);
 		}
-		else {
-			display_label->Text = "Click equal first.";
-		}
-	}
 
 	private: System::Void add_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		HandleOperatorButtonClick("+", addition);
+		}
 
-		if (!multiplication && !division && !addition && !subtraction) {
-			num1 = System::Convert::ToInt16(current_num);
-			first_click = true;
-			addition = true;
-			current_num = "";
-		}
-		else {
-			display_label->Text = "Click equal first.";
-		}
-	}
 	private: System::Void subtract_button_Click(System::Object^ sender, System::EventArgs^ e) {
-
-		if (!multiplication && !division && !addition && !subtraction) {
-			num1 = System::Convert::ToInt16(current_num);
-			first_click = true;
-			subtraction = true;
-			current_num = "";
+		HandleOperatorButtonClick("-", subtraction);
 		}
-		else {
-			display_label->Text = "Click equal first.";
-		}
-	}
 
 	private: System::Void divide_button_Click(System::Object^ sender, System::EventArgs^ e) {
-
-
-		if (!multiplication && !division && !addition && !subtraction) {
-			num1 = System::Convert::ToInt16(current_num);
-			first_click = true;
-			division = true;
-
+		HandleOperatorButtonClick("/", division);
 		}
-		else {
-			display_label->Text = "Click equal first.";
-		}
-	}
 
 
 	private: System::Void equal_button_Click(System::Object^ sender, System::EventArgs^ e) {
 
 
 		if (!multiplication && !division && !addition && !subtraction) {
-			display_label->Text = "Select a operator.";
+			sub_label->Text = "Select a operator.";
 		}
+
 		else if (multiplication) {
-			num2 = System::Convert::ToInt16(current_num);
+			checkForNumber();
+			limitString(current_num);
+			sub_label->Text += current_num + " =";
+			num2 = System::Convert::ToDouble(current_num);
 			result = num1 * num2;
 			current_num = System::Convert::ToString(result);
+			limitString(current_num);
 			display_label->Text = System::Convert::ToString(result);
 			multiplication = false;
 		}
 		else if (division) {
-			num2 = System::Convert::ToInt16(current_num);
-			result = num1 / num2;
-			current_num = System::Convert::ToString(result);
-			display_label->Text = System::Convert::ToString(result);
-			division = false;
+			checkForNumber();
+			limitString(current_num);
+			sub_label->Text += current_num + " =";
+			num2 = System::Convert::ToDouble(current_num);
 
+			if (num2 == 0) {
+				sub_label->Text = "Error: Cannot divide by 0";
+			}
+			else {
+				result = num1 / num2;
+				current_num = System::Convert::ToString(result);
+				display_label->Text = System::Convert::ToString(result);
+			}
+
+			division = false;
 		}
 		else if (addition) {
-			num2 = System::Convert::ToInt16(current_num);
+			checkForNumber();
+			limitString(current_num);
+			sub_label->Text += current_num + " =";
+			num2 = System::Convert::ToDouble(current_num);
 			result = num1 + num2;
 			current_num = System::Convert::ToString(result);
 			display_label->Text = System::Convert::ToString(result);
 			addition = false;
 		}
 		else if (subtraction) {
-			num2 = System::Convert::ToInt16(current_num);
+			checkForNumber();
+			limitString(current_num);
+			sub_label->Text += current_num + " =";
+			num2 = System::Convert::ToDouble(current_num);
 			result = num1 - num2;
 			current_num = System::Convert::ToString(result);
 			display_label->Text = System::Convert::ToString(result);
@@ -549,6 +571,7 @@ namespace Calculator {
 		addition = false;
 		subtraction = false;
 		display_label->Text = "";
+		sub_label->Text = "";
 
 	}
 
